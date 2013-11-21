@@ -1,11 +1,12 @@
 Average Requests Per Second
 
-60,391
+59,545
 
 Memory Footprint
 
-Start: 772 kb
-End: 22.5 mb
+Start: 772kb
+End: 22.4mb
 
 *NOTES*
-Moved Handler and message struct to store
+RC2 - Moved Handler and message struct to store
+RC3 - Eliminated return values in store methods. Reusing original message pointer. Call encode once at the end of the switch

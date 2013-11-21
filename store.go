@@ -25,22 +25,19 @@ func InitStore() *Store {
 	}
 }
 
-func (self *Store) Set(m *M) M {
+func (self *Store) Set(m *M) {
 	self.Lock()
 	self.data[m.Key] = m.Val
 	_, ok := self.data[m.Key]
 	self.Unlock()
-	return M{Val: ok}
+	m.Cmd, m.Key, m.Val = "", "", ok
+
 }
 
-func (self *Store) Get(m *M) M {
+func (self *Store) Get(m *M) {
 	self.RLock()
-	if v, ok := self.data[m.Key]; ok {
-		self.RUnlock()
-		return M{Val: v}
-	}
+	m.Cmd, m.Key, m.Val = "", "", self.data[m.Key]
 	self.RUnlock()
-	return M{Val: false}
 }
 
 func (self *Store) Handle(conn net.Conn) {
@@ -57,11 +54,12 @@ func (self *Store) Handle(conn net.Conn) {
 		}
 		switch m.Cmd {
 		case "set":
-			enc.Encode(self.Set(&m))
+			self.Set(&m)
 		case "get":
-			enc.Encode(self.Get(&m))
+			self.Get(&m)
 		default:
-			enc.Encode(M{Val: "false"})
+			m.Cmd, m.Key, m.Val = "", "", nil
 		}
+		enc.Encode(m)
 	}
 }
