@@ -1,3 +1,11 @@
 Average Requests Per Second
 
-60,035
+60,391
+
+Memory Footprint
+
+Start: 772 kb
+End: 22.5 mb
+
+*NOTES*
+Moved Handler and message struct to store
